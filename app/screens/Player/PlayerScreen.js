@@ -11,10 +11,11 @@ import Orientation from 'react-native-orientation'
 import { utils } from 'popcorn-sdk'
 
 import i18n from 'modules/i18n'
+import withDownloadManager from 'modules/DownloadManager/withDownloadManager'
 
 import Typography from 'components/Typography'
 
-export default class VideoPlayer extends React.Component {
+export class Player extends React.Component {
 
   static propTypes = {
     navigation: PropTypes.object.isRequired,
@@ -43,17 +44,24 @@ export default class VideoPlayer extends React.Component {
 
   serverDirectory = null
 
+  torrentStreamer
+
   constructor(props) {
     super(props)
 
     this.serverDirectory = RNFS.CachesDirectoryPath
 
-    TorrentStreamer.setup(this.serverDirectory, true)
+    // TorrentStreamer.setup(this.serverDirectory, true)
+
+    // this.torrentStreamer = new TorrentStreamer()
+
+    console.log('props', props)
+
     this.staticServer = new StaticServer(0, this.serverDirectory, { keepAlive: true })
   }
 
   componentDidMount() {
-    const { navigation: { state: { params: { magnet } } } } = this.props
+    const { downloader, navigation: { state: { params: { magnet } } } } = this.props
 
     Orientation.addOrientationListener(this.handleOrientationChange)
 
@@ -61,15 +69,31 @@ export default class VideoPlayer extends React.Component {
     GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_STARTED, this.handleCastSessionStarted)
     GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_ENDED, this.handleCastSessionEnded)
 
-    TorrentStreamer.addEventListener('error', this.handleTorrentError)
-    TorrentStreamer.addEventListener('status', this.handleTorrentStatus)
-    TorrentStreamer.addEventListener('ready', this.handleTorrentReady)
+    downloader.stream(
+      magnet.url,
+      this.serverDirectory,
+      {
+        onReady   : this.handleTorrentReady,
+        onProgress: this.handleTorrentProgress,
+        onError   : this.handleTorrentError,
+      },
+    )
+
+    // const id = this.torrentStreamer.add(magnet.url, null, this.serverDirectory)
+
+    // this.torrentStreamer.addListener(id, 'error', this.handleTorrentError)
+    // this.torrentStreamer.addListener(id, 'status', this.handleTorrentStatus)
+    // this.torrentStreamer.addListener(id, 'ready', this.handleTorrentReady)
 
     // Start
-    TorrentStreamer.start(magnet.url)
+    // this.torrentStreamer.handleStreams()
   }
 
   componentWillUnmount() {
+    const { downloader } = this.props
+
+    downloader.stopStream()
+
     Orientation.removeOrientationListener(this.handleOrientationChange)
     Orientation.lockToPortrait()
 
@@ -77,11 +101,11 @@ export default class VideoPlayer extends React.Component {
     GoogleCast.EventEmitter.removeAllListeners(GoogleCast.SESSION_STARTED)
     GoogleCast.EventEmitter.removeAllListeners(GoogleCast.SESSION_ENDED)
 
-    TorrentStreamer.removeEventListener('error', this.handleTorrentError)
-    TorrentStreamer.removeEventListener('status', this.handleTorrentStatus)
-    TorrentStreamer.removeEventListener('ready', this.handleTorrentReady)
+    // this.torrentStreamer.removeListener(this.handleTorrentError)
+    // this.torrentStreamer.removeListener(this.handleTorrentStatus)
+    // this.torrentStreamer.removeListener(this.handleTorrentReady)
 
-    TorrentStreamer.stop()
+    // this.torrentStreamer.stopAll()
 
     this.staticServer.kill()
 
@@ -120,17 +144,17 @@ export default class VideoPlayer extends React.Component {
     })
   }
 
-  handleTorrentStatus = (status) => {
+  handleTorrentProgress = (data) => {
     const { buffer, progress } = this.state
 
-    const nProgress = parseFloat(status.progress)
+    const nProgress = parseFloat(data.progress)
 
-    if (status.buffer !== buffer || (nProgress > (progress + 1)) || nProgress > 99) {
+    if (data.buffer !== buffer || (nProgress > (progress + 1)) || nProgress > 99) {
       this.setState({
-        ...status,
+        ...data,
         progress     : nProgress > 99 ? 100 : nProgress,
-        downloadSpeed: utils.formatKbToString(status.downloadSpeed),
-        doneBuffering: status.buffer === '100',
+        downloadSpeed: utils.formatKbToString(data.downloadSpeed),
+        doneBuffering: data.buffer === '100',
       })
     }
   }
@@ -165,7 +189,7 @@ export default class VideoPlayer extends React.Component {
     })
   }
 
-  handleTorrentError = (e) => {
+  handleTorrentError = (...e) => {
     // eslint-disable-next-line no-console
     console.log('error', e)
   }
@@ -392,3 +416,5 @@ const styles = StyleSheet.create({
   },
 
 })
+
+export default withDownloadManager(Player)

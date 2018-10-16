@@ -22,7 +22,19 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    margin: 8,
+    display      : 'flex',
+    flexDirection: 'row',
+    margin       : 8,
+  },
+
+  iconContainer: {
+    marginBottom: 16,
+  },
+
+  icon: {
+    marginLeft : 16,
+    marginRight: 16,
+    padding    : 8,
   },
 
   dropDown: {
@@ -145,13 +157,36 @@ export default class Item extends React.Component {
           )}
 
           {item && (
-            <View style={styles.container}>
+            <View style={[styles.container, styles.iconContainer]}>
               <IconButton
+                style={styles.icon}
                 onPress={this.handleToggleBookmarks}
-                name={item.bookmarked ? 'playlist-add-check' : 'playlist-add'}
+                name={item.bookmarked ? 'check' : 'add'}
                 color={'#FFF'}
-                size={40}
-              />
+                size={36}>
+                {i18n.t('My List')}
+              </IconButton>
+
+              {/* <IconButton
+               style={styles.icon}
+               // onPress={this.handleToggleBookmarks}
+               name={'visibility'}
+               // name={'visibility_off'}
+               color={'#FFF'}
+               size={36}>
+               {i18n.t('Watched')}
+               </IconButton>
+
+               <IconButton
+               style={styles.icon}
+               // onPress={this.handleToggleBookmarks}
+               name={'cloud-download'}
+               // name={'cloud_done'}
+               // name={'cloud'} // When downloading
+               color={'#FFF'}
+               size={36}>
+               {i18n.t('Download')}
+               </IconButton>*/}
             </View>
           )}
 
