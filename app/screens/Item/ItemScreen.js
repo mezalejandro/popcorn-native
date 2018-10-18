@@ -93,7 +93,7 @@ export default class Item extends React.Component {
   }
 
   playItem = (torrents, episode = {}) => {
-    const { navigation: { navigate, state: { params: item } } } = this.props
+    const { navigation: { navigate }, item } = this.props
 
     navigate('Player', {
       magnet: utils.getBestTorrent(torrents),
@@ -161,7 +161,7 @@ export default class Item extends React.Component {
               <IconButton
                 style={styles.icon}
                 onPress={this.handleToggleBookmarks}
-                name={item.bookmarked ? 'check' : 'add'}
+                name={item.bookmarked ? 'check' : 'plus'}
                 color={'#FFF'}
                 size={36}>
                 {i18n.t('My List')}
@@ -176,17 +176,19 @@ export default class Item extends React.Component {
                size={36}>
                {i18n.t('Watched')}
                </IconButton>
-
-               <IconButton
-               style={styles.icon}
-               // onPress={this.handleToggleBookmarks}
-               name={'cloud-download'}
-               // name={'cloud_done'}
-               // name={'cloud'} // When downloading
-               color={'#FFF'}
-               size={36}>
-               {i18n.t('Download')}
-               </IconButton>*/}
+               */}
+              {/*{item.type === Constants.TYPE_MOVIE && (
+                <IconButton
+                  style={styles.icon}
+                  onPress={this.handleDownloadItem(item.torrents)}
+                  name={'cloud-download'}
+                  // name={'cloud_done'}
+                  // name={'cloud'} // When downloading
+                  color={'#FFF'}
+                  size={36}>
+                  {i18n.t('Download')}
+                </IconButton>
+              )}*/}
             </View>
           )}
 
@@ -213,6 +215,7 @@ export default class Item extends React.Component {
               <Episode
                 key={episode.key}
                 playItem={this.playItem}
+                handleDownloadItem={this.handleDownloadItem}
                 {...episode} />
             ))
           )}

@@ -1,18 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet, View, Image } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import posterHolderImage from 'images/posterholder.png'
 
 import Typography from 'components/Typography'
 import Overlay from 'components/Overlay'
 import BaseButton from 'components/BaseButton'
+import DownloadItem from 'components/DownloadItem'
 
 export const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    margin : 16,
+    margin : 8,
   },
 
   posterWithTitle: {
@@ -33,6 +34,7 @@ export const styles = StyleSheet.create({
 
   title: {
     marginLeft: 8,
+    flex: 1,
   },
 
   summary: {
@@ -40,7 +42,7 @@ export const styles = StyleSheet.create({
   },
 })
 
-export const Episode = ({ playItem, hasTorrents, title, summary, images, torrents }) => {
+export const Episode = ({ playItem, id, hasTorrents, title, episode, summary, images, torrents }) => {
   const handlePlayItem = () => {
     if (hasTorrents) {
       playItem(torrents, { title, summary })
@@ -80,8 +82,15 @@ export const Episode = ({ playItem, hasTorrents, title, summary, images, torrent
         </BaseButton>
 
         <Typography style={styles.title}>
-          {title}
+          {`${episode}. ${title}`}
         </Typography>
+
+        {hasTorrents && id && (
+          <DownloadItem
+            id={id}
+            torrents={torrents}
+          />
+        )}
       </View>
 
       <Typography style={styles.summary} variant={'caption'}>
