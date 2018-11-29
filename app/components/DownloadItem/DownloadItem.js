@@ -33,12 +33,9 @@ export class DownloadItem extends React.Component {
 
     const stream = downloader.getStream(id)
 
-    console.log('stream', stream, id)
-    console.log('downloader', downloader)
-
     this.state = {
       progress: stream ? stream.progress : 0,
-      state   : stream ? stream.state : null,
+      state   : stream ? stream.status : null,
     }
   }
 
@@ -54,21 +51,30 @@ export class DownloadItem extends React.Component {
     console.log('episode.handleProgress', data)
 
     this.setState({
-      state   : 'downloading',
+      state   : data.progress !== 100 ? 'downloading' : 'downloaded',
       progress: parseFloat(data.progress || 0),
     })
   }
 
   handleDownloadItem = () => {
-    const { downloader, torrents, id } = this.props
+    const { downloader, torrents, id, progress } = this.props
+
+    if (progress > 99 ) {
+      return
+    }
 
     const magnet = utils.getBestTorrent(torrents)
 
     console.log('download', id, `${id}`)
     downloader.download(magnet.url, id)
+
+    this.setState({
+      state   : 'downloading',
+      progress: 0,
+    })
   }
 
-  renderTitle (){
+  renderTitle() {
     const { withTitle } = this.props
 
     if (withTitle) {

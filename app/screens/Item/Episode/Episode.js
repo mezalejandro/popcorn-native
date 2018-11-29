@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
 export const Episode = ({ playItem, id, hasTorrents, title, episode, summary, images, torrents }) => {
   const handlePlayItem = () => {
     if (hasTorrents) {
-      playItem(torrents, { title, summary })
+      playItem(torrents, { id: `episode-${id}`, title, summary })
     }
   }
 
@@ -87,7 +87,7 @@ export const Episode = ({ playItem, id, hasTorrents, title, episode, summary, im
 
         {hasTorrents && id && (
           <DownloadItem
-            id={id}
+            id={`episode-${id}`}
             torrents={torrents}
           />
         )}

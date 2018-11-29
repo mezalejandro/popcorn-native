@@ -94,7 +94,7 @@ export default class Item extends React.Component {
 
   playItem = (torrents, episode = {}) => {
     const { navigation: { navigate }, item } = this.props
-
+console.log('play item', item, episode)
     navigate('Player', {
       magnet: utils.getBestTorrent(torrents),
       item  : {

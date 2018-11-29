@@ -61,7 +61,7 @@ export class Player extends React.Component {
   }
 
   componentDidMount() {
-    const { downloader, navigation: { state: { params: { magnet } } } } = this.props
+    const { downloader, navigation: { state: { params: { magnet, item } } } } = this.props
 
     Orientation.addOrientationListener(this.handleOrientationChange)
 
@@ -69,12 +69,14 @@ export class Player extends React.Component {
     GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_STARTED, this.handleCastSessionStarted)
     GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_ENDED, this.handleCastSessionEnded)
 
+    downloader.addListener(item.id, this.handleTorrentProgress)
+
     downloader.stream(
       magnet.url,
+      item.id,
       this.serverDirectory,
       {
         onReady   : this.handleTorrentReady,
-        onProgress: this.handleTorrentProgress,
         onError   : this.handleTorrentError,
       },
     )
@@ -90,9 +92,13 @@ export class Player extends React.Component {
   }
 
   componentWillUnmount() {
-    const { downloader } = this.props
+    const { downloader, navigation: { state: { params: { item } } } } = this.props
 
-    downloader.stopStream()
+    downloader.removeListener(item.id, this.handleTorrentProgress)
+
+    console.log('PlayerScreen', 'componentWillUnmount')
+    downloader.stopStream(item.id)
+
 
     Orientation.removeOrientationListener(this.handleOrientationChange)
     Orientation.lockToPortrait()
@@ -145,6 +151,7 @@ export class Player extends React.Component {
   }
 
   handleTorrentProgress = (data) => {
+    console.log('PlayerScreen', 'handleTorrentProgress', data)
     const { buffer, progress } = this.state
 
     const nProgress = parseFloat(data.progress)
@@ -160,6 +167,8 @@ export class Player extends React.Component {
   }
 
   handleTorrentReady = async(data) => {
+    console.log('PlayerScreen', 'handleTorrentReady', data)
+
     const castState = await GoogleCast.getCastState()
 
     if (castState.toLowerCase() === 'connected') {
