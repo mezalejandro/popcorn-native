@@ -1,5 +1,3 @@
-/* eslint react/prop-types: 0 */
-
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation'
@@ -12,9 +10,12 @@ import HomeScreen from './Home'
 import ItemScreen from './Item'
 import PlayerScreen from './Player'
 import ModeScreen from './Mode'
+import SearchScreen from './Search'
 
 export const AppNavigator = createStackNavigator({
   Main: {
+    // screen: HomeScreen,
+
     screen: createBottomTabNavigator({
       Home: {
         screen           : HomeScreen,
@@ -30,44 +31,74 @@ export const AppNavigator = createStackNavigator({
         },
       },
 
-      MyList: {
-        screen: ({ ...props }) => <ModeScreen mode={Constants.TYPE_BOOKMARK} {...props} />,
+      /*  MyList: {
+       screen: ({ ...props }) => <ModeScreen mode={Constants.TYPE_BOOKMARK} {...props} />,
+
+       navigationOptions: {
+       tabBarLabel: i18n.t('My List'),
+       tabBarIcon : ({ tintColor }) => (
+       <Icon
+       name={'bookmark'}
+       color={tintColor}
+       size={25}
+       />
+       ),
+       },
+       },
+       */
+      /* Movies: {
+       screen: ({ ...props }) => <ModeScreen mode={Constants.TYPE_MOVIE} {...props} />,
+
+       navigationOptions: {
+       tabBarLabel: i18n.t('Movies'),
+       tabBarIcon : ({ tintColor }) => (
+       <Icon
+       name={'movie'}
+       color={tintColor}
+       size={25}
+       />
+       ),
+       },
+       },*/
+      /*
+       Shows: {
+       screen: ({ ...props }) => <ModeScreen mode={Constants.TYPE_SHOW} {...props} />,
+
+       navigationOptions: {
+       tabBarLabel: i18n.t('Shows'),
+       tabBarIcon : ({ tintColor }) => (
+       <Icon
+       name={'animation-play'}
+       color={tintColor}
+       size={25}
+       />
+       ),
+       },
+       },
+
+       Search2: {
+       screen: SearchScreen,
+
+       navigationOptions: {
+       tabBarLabel: i18n.t('Shows'),
+       tabBarIcon : ({ tintColor }) => (
+       <Icon
+       name={'animation-play'}
+       color={tintColor}
+       size={25}
+       />
+       ),
+       },
+       },*/
+
+      Search: {
+        screen: SearchScreen,
 
         navigationOptions: {
-          tabBarLabel: i18n.t('My List'),
+          tabBarLabel: i18n.t('Search'),
           tabBarIcon : ({ tintColor }) => (
             <Icon
-              name={'bookmark'}
-              color={tintColor}
-              size={25}
-            />
-          ),
-        },
-      },
-
-      Movies: {
-        screen: ({ ...props }) => <ModeScreen mode={Constants.TYPE_MOVIE} {...props} />,
-
-        navigationOptions: {
-          tabBarLabel: i18n.t('Movies'),
-          tabBarIcon : ({ tintColor }) => (
-            <Icon
-              name={'movie'}
-              color={tintColor}
-              size={25}
-            />
-          ),
-        },
-      },
-
-      Shows: {
-        screen: ({ ...props }) => <ModeScreen mode={Constants.TYPE_SHOW} {...props} />,
-
-        navigationOptions: {
-          tabBarLabel: i18n.t('Shows'),
-          tabBarIcon : ({ tintColor }) => (
-            <Icon
-              name={'animation-play'}
+              name={'magnify'}
               color={tintColor}
               size={25}
             />

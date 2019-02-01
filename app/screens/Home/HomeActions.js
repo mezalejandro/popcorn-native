@@ -45,19 +45,7 @@ export const getItems = (mode, page = 1, givenFilters = {}) => (dispatch, getSta
     case Constants.TYPE_MOVIE:
       return Popcorn.getMovies(page, filters).then(movies => dispatch(fetchedItems(movies, mode))).catch(catchNoCon)
 
-    case 'movieSearch':
-      // Clear the items
-      dispatch(clearItems(mode))
-
-      return Popcorn.getMovies(page, filters).then(movies => dispatch(fetchedItems(movies, mode))).catch(catchNoCon)
-
     case Constants.TYPE_SHOW:
-      return Popcorn.getShows(page, filters).then(shows => dispatch(fetchedItems(shows, mode))).catch(catchNoCon)
-
-    case 'showSearch':
-      // Clear the items
-      dispatch(clearItems(mode))
-
       return Popcorn.getShows(page, filters).then(shows => dispatch(fetchedItems(shows, mode))).catch(catchNoCon)
 
     case Constants.TYPE_BOOKMARK:
@@ -75,14 +63,6 @@ export const getItems = (mode, page = 1, givenFilters = {}) => (dispatch, getSta
           )
         })
       })
-
-    case 'bookmarkSearch':
-      return Bookmarks.getAll().then(bookmarks => dispatch(
-        fetchedItems(
-          bookmarks.filter(bookmark => bookmark.title.toLowerCase().indexOf(filters.keywords.toLowerCase()) > -1),
-          mode,
-        ),
-      ))
 
     default:
       return null

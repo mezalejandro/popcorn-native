@@ -7,8 +7,10 @@ import SplashScreen from 'react-native-splash-screen'
 
 import i18n from 'modules/i18n'
 import colors from 'modules/colors'
+import { TOP_GENRES } from 'modules/genres'
 
 import CardSlider from 'components/CardSlider'
+import GenresSlider from 'components/GenresSlider'
 import MainCover from 'components/MainCover'
 import ScrollViewWithStatusBar from 'components/ScrollViewWithStatusBar'
 
@@ -73,7 +75,7 @@ export default class Home extends React.PureComponent {
   getMyList = () => {
     const { modes } = this.props
 
-    return modes[Constants.TYPE_BOOKMARK].items.filter(movie => !movie.watched.complete).slice(0, 10)
+    return modes[Constants.TYPE_BOOKMARK].items.filter(movie => !movie.watched.complete).slice(0, 20)
   }
 
   getMovies = (withSlice = true) => {
@@ -83,7 +85,7 @@ export default class Home extends React.PureComponent {
     const movies = modes[Constants.TYPE_MOVIE].items.filter(movie => !movie.watched.complete && !movie.bookmarked)
 
     if (withSlice) {
-      return movies.slice(1, 11)
+      return movies.slice(1, 21)
     }
 
     return movies
@@ -92,7 +94,7 @@ export default class Home extends React.PureComponent {
   getShows = () => {
     const { modes } = this.props
 
-    return modes[Constants.TYPE_SHOW].items.filter(show => !show.bookmarked).slice(0, 10)
+    return modes[Constants.TYPE_SHOW].items.filter(show => !show.bookmarked).slice(0, 20)
   }
 
   getMyListCardProps = () => ({})
@@ -100,6 +102,8 @@ export default class Home extends React.PureComponent {
   getMoviesListCardProps = () => ({})
 
   getShowListCardProps = () => ({})
+
+  getGenreListCardProps = () => ({})
 
   renderMainCover = () => {
     const { isLoading } = this.props
@@ -164,6 +168,20 @@ export default class Home extends React.PureComponent {
     )
   }
 
+  renderGenresList = () => {
+    const { isLoading } = this.props
+
+    return (
+      <GenresSlider
+        style={{ marginBottom: 16 }}
+        onPress={this.handleItemOpen}
+        loading={isLoading}
+        title={i18n.t('Genres')}
+        items={TOP_GENRES}
+        cardProps={this.getGenreListCardProps()} />
+    )
+  }
+
   render() {
     const { hasInternet } = this.props
 
@@ -181,6 +199,8 @@ export default class Home extends React.PureComponent {
             {this.renderMoviesList()}
 
             {this.renderShowsList()}
+
+            {this.renderGenresList()}
 
           </ScrollViewWithStatusBar>
         )}
