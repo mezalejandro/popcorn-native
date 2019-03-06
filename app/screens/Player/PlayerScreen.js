@@ -10,6 +10,7 @@ import Orientation from 'react-native-orientation'
 
 import i18n from 'modules/i18n'
 import SubtitlesManager from 'modules/SubtitlesManager'
+import TorrentManager from 'modules/TorrentManager'
 
 import Typography from 'components/Typography'
 import Button from 'components/Button'
@@ -37,6 +38,8 @@ export default class VideoPlayer extends React.Component {
 
     TorrentStreamer.setup(this.serverDirectory, false)
     this.staticServer = new StaticServer(0, this.serverDirectory, { keepAlive: true })
+
+    this.staticServer.start().then(url => console.log('this.staticServer.url', url))
 
     const { navigation: { state: { params: { item } } } } = props
 
@@ -78,14 +81,16 @@ export default class VideoPlayer extends React.Component {
     TorrentStreamer.addEventListener('ready', this.handleTorrentReady)
 
     // Start
-    TorrentStreamer.start(torrent.url)
+    const manager = new TorrentManager()
+    manager.start(torrent.url, item)
+    // TorrentStreamer.start(torrent.url)
 
     // Fetch subs
-    SubtitlesManager.search(item, torrent).then((subs) => {
-      this.setState({
-        subs,
-      })
-    })
+    // SubtitlesManager.search(item, torrent).then((subs) => {
+    //   this.setState({
+    //     subs,
+    //   })
+    // })
 
     // this.setState({
     //   url          : 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4',
@@ -123,7 +128,9 @@ export default class VideoPlayer extends React.Component {
     TorrentStreamer.removeEventListener('status', this.handleTorrentStatus)
     TorrentStreamer.removeEventListener('ready', this.handleTorrentReady)
 
-    TorrentStreamer.stop()
+//    TorrentStreamer.stop()
+
+    // TorrentManager.destroy()
 
     this.staticServer.kill()
 

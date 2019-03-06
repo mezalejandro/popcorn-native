@@ -1,3 +1,8 @@
+import debug from 'debug'
+
+debug.enable('*')
+
+
 import React from 'react'
 import { Provider } from 'react-redux'
 

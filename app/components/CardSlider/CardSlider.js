@@ -1,22 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StyleSheet, View, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, View, FlatList } from 'react-native'
 
 import Card from '../Card'
 import Typography from '../Typography'
 
 export const styles = StyleSheet.create({
-
-  root: {
-    height     : 190,
-    width      : 120,
-    marginLeft : 10,
-    marginRight: 10,
-    alignSelf  : 'stretch',
-    position   : 'relative',
-    display    : 'flex',
-    alignItems : 'center',
-  },
 
   title: {
     marginLeft: 8,
